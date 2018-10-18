@@ -12,6 +12,9 @@ function ignoreFavicon(req, res, next) {
     }
   }
 //rutas
+app.get('/', function(req, res) {
+  res.send('hello world');
+});
 
 //middleware
 app.use(bodyParser.urlencoded({extended:false}));
