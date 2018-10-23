@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('./config/config').get(process.env.NODE_ENV == undefined ? "dev" : process.env.NODE_ENV);
 
 const userRoutes = require('./routes/userRoutes');
 
@@ -15,7 +16,7 @@ function ignoreFavicon(req, res, next) {
   }
 //rutas
 app.get('/', function(req, res) {
-  res.send('tis is de presenteichon olv');
+  res.send(config.sayHello);
 });
 app.use('/users',userRoutes);
 
