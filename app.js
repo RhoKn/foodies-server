@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('./config/config').get(process.env.NODE_ENV == undefined ? "dev" : process.env.NODE_ENV);
 
 var app = express();
 function ignoreFavicon(req, res, next) {
@@ -13,7 +14,7 @@ function ignoreFavicon(req, res, next) {
   }
 //rutas
 app.get('/', function(req, res) {
-  res.send('hello world');
+  res.send(config.sayHello);
 });
 
 //middleware
