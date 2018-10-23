@@ -2,10 +2,11 @@
 
 const mongoose = require('mongoose');
 const app = require('./app');
-const port = 3000;
+const config = require('./config/config').get(process.env.NODE_ENV == undefined ? "dev" : process.env.NODE_ENV);
+const port = config.port;
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/foodies',{ useNewUrlParser: true }).then(()=>{
+mongoose.connect(config.databaseURL,{ useNewUrlParser: true }).then(()=>{
     console.log('La conexion seasdas hizo chidamente');
     //crear server
     app.listen(port,()=>{

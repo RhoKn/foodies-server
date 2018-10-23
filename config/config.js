@@ -1,9 +1,14 @@
 
 const config = {
     production: {
-        'sayHello': 'Hola perrooooo'
+        'sayHello': 'Hola perrooooo',
+        'databaseURL' : 'mongodb://localhost:27017/foodies',
+        'mlabDatabaseUrl' : 'mongodb://rhoKn:321123321KiRi@ds141043.mlab.com:41043/foodies',
     },
     dev: {
+        'port' :3000,
+        'databaseURL' : 'mongodb://localhost:27017/foodies',
+        'mlabDatabaseUrl' : 'mongodb://rhoKn:321123321KiRi@ds141043.mlab.com:41043/foodies',
         'sayHello': 'hello dooooog'
     }
 };
