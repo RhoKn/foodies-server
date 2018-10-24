@@ -6,5 +6,6 @@ module.exports = {
     ingredient  :   'ingredient',
     ingredients :   'ingredients',
     employee    :   'employee',
-    employees   :   'employees'
+    employees   :   'employees',
+    token       :   'token'
 }

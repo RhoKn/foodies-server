@@ -3,8 +3,9 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt-nodejs');
 const responseHelper = require('../services/responseHelper');
+const jwt = require('../services/jwt');
 const specification = require('../enum/specification.js');
-const saltRounds = 10;
+const mongoosePaginate = require('mongoose-pagination');
 
 function prueba (req, res) {
     res.send('olovaaaaargio');
@@ -57,11 +58,85 @@ function newUser (req, res) {
     
 }
 
+function listAll(req, res){
+    var page = 1;
+    if(req.params.page){
+        page = req.params.page;
+    }
+    const usrs_per_page = 5;
+    User.find().sort('name').paginate(page,usrs_per_page,(err,users,total)=>{
+        if(err){
+            return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        }
+        
+        if(!users){
+            return responseHelper.helper(undefined,res,200,'No existen usuarios');
+        }
+        
+        return res.status(200).send({
+            message: 'Lista de usuarios',
+            users: users,
+            total: total,
+            pages: Math.ceil(total/usrs_per_page)
+        });
+    });
+}
+
+function login(req, res){
+    const userToLogin = req.body;
+    User.findOne({email : userToLogin.email},(err,user)=>{
+        if(err){
+            return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        }
+        if(user){
+            bcrypt.compare(userToLogin.password, user.password,(err, areEqual)=>{
+                if(err){
+                    return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+                }
+                if(areEqual){
+                    user.password = undefined;
+                    if(userToLogin.getToken){
+                        //generar y devolver token
+                        return responseHelper.helper(specification.token,res,200,'token del usuario',jwt.createToken(user));
+                    }else{
+                        //devolver datos de usuario
+                        return responseHelper.helper(specification.user,res,200,'Usuario loggeado',user);
+                    }
+                }else{
+                    return responseHelper.helper(undefined,res,404,'Contraseña incorrecta');
+                }
+            });
+        }else{
+            return responseHelper.helper(undefined,res,404,'No existe un usuario con ese correo');
+        }
+    });
+}
+
+function vieweUser (req,res){
+    const userToView = req.params.id;
+
+    User.findById(userToView,(err,user)=>{
+        if(err){
+            return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        }
+        if(user){
+            user.password = undefined;
+            return responseHelper.helper(specification.user,res,200,'Usuario encontrado',user);
+        }else{
+            return responseHelper.helper(undefined,res,404,'El usuario no existe');
+        }
+    });
+}
+
+
+
 module.exports = {
     prueba,
-    newUser
+    newUser,
+    listAll,
+    login,
+    vieweUser
     /**
-    lista,
     soloUno,
     updetear,
     eliminar

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var  userSchema = new Schema({
-  firstName      :   String,
+  firstName :   String,
   lastName  :   String,
   nickName  :   String,
   role      :   String,
@@ -16,7 +16,7 @@ var  userSchema = new Schema({
 userSchema.methods.fullName = ()=>{
     return `${this.name} ${this.lastName}`;
 }
-userSchema.methods.fullName = () => {
+userSchema.methods.isAdmin = () => {
     if(this.role === 'gerente'){
         return true;
     }
