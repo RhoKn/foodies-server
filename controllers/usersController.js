@@ -128,14 +128,32 @@ function vieweUser (req,res){
     });
 }
 
-
+function update (req, res){
+    const userToUpdate = req.params.id;
+    var updateInfo = req.body;
+    delete userToUpdate.password;
+    if(userToUpdate != req.user.sub){
+        return responseHelper.helper(undefined,res,500,'No puedes editar la información de otros usuarios');
+    }
+    User.findByIdAndUpdate(userToUpdate,updateInfo,{new: true}, (err, updatedUser)=>{
+        if(err){
+            return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        }
+        if(!updatedUser){
+            return responseHelper.helper(undefined,res,404,'No se pudo actualizar');
+        }else{
+            return responseHelper.helper(specification.user,res,200,'Usuario actualizado',updatedUser);
+        }    
+    });
+}
 
 module.exports = {
     prueba,
     newUser,
     listAll,
     login,
-    vieweUser
+    vieweUser,
+    update
     /**
     soloUno,
     updetear,
