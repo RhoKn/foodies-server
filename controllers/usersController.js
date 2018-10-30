@@ -6,6 +6,7 @@ const responseHelper = require('../services/responseHelper');
 const jwt = require('../services/jwt');
 const specification = require('../enum/specification.js');
 const mongoosePaginate = require('mongoose-pagination');
+var mongoose = require('mongoose');
 
 function prueba (req, res) {
     res.send('olovaaaaargio');
@@ -128,7 +129,7 @@ function vieweUser (req,res){
     });
 }
 
-function update (req, res){
+function updateUser (req, res){
     const userToUpdate = req.params.id;
     var updateInfo = req.body;
     delete userToUpdate.password;
@@ -147,13 +148,93 @@ function update (req, res){
     });
 }
 
+function deleteUser (req, res){
+    const userToDelete = req.params.id;
+
+    if(req.user.sub != userToDelete){
+        User.findById(req.user.sub,(err, user) => {
+            if(err){
+                return responseHelper.helper(undefined,res,500,'Hubo un error en la busqueda del usuario actual');
+            }
+            if(!user){
+                return responseHelper.helper(undefined,res,404,'El usuario proveniente del token es erroneo');
+            }else{
+                if(user.isAdminOrUpper()){
+                    asyncDeleteUser(userToDelete,user.isOwner()).then((message)=>{
+                        return responseHelper.helper(undefined,res,message.status,message.message);
+                    });
+                }else {
+                    let caca = 0;
+                    if(user.role === 'admin'){
+                        caca = true;
+                    }
+                    return responseHelper.helper(undefined,res,500,'No tienes permisos para eliminar usuarios'+user.isAdminOrUpper());
+                }
+            }
+        });
+    }else{
+        return responseHelper.helper(undefined,res,500,'No es posible eliminarte a ti mismo');
+    }
+}
+
+async function asyncDeleteUser (userToDelete,isOwner){
+    var json = {};
+    var status = 200;
+    var message = undefined;
+    var canBeDeleted = null;
+
+    if(mongoose.Types.ObjectId.isValid(userToDelete)){
+        canBeDeleted = await User.findById(mongoose.mongo.ObjectId(userToDelete)).exec().then((userFound)=>{
+            if (userFound){
+                if(isOwner){
+                    return true;
+                }else {
+                    if(userFound.isAdminOrUpper()){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }
+            }else{
+                return 'No existe el usuario a eliminar';
+            }
+        }).catch((err)=>{
+            return 'Hubo un prolema con la busqueda del usuario a eliminar';
+        });
+        
+    }
+    
+    if(canBeDeleted && typeof canBeDeleted === 'boolean'){
+        message = await User.findByIdAndRemove({'_id':userToDelete}).exec().then((removed) => {
+        if(removed){
+            return 'Usuario eliminado con éxito';
+        }else{
+            status = 500;
+            return 'El usuario no ha sido eliminado';
+        }
+        }).catch((err) => {
+            return err;
+        });
+    }else if(canBeDeleted === null){
+        status = 404;
+        message = 'ID de la petición es erroneo';
+    }
+    else{
+        status = 500;
+        message = 'No tienes permisos para eliminar a este usuario';
+    } 
+    json.message = message;
+    json.status = status;
+    return json;
+}
 module.exports = {
     prueba,
     newUser,
     listAll,
     login,
     vieweUser,
-    update
+    updateUser,
+    deleteUser
     /**
     soloUno,
     updetear,

@@ -13,11 +13,17 @@ var  userSchema = new Schema({
   image     :   String
 });
 
-userSchema.methods.fullName = ()=>{
+userSchema.methods.fullName = function (){
     return `${this.name} ${this.lastName}`;
 }
-userSchema.methods.isAdmin = () => {
+userSchema.methods.isOwner = function () {
     if(this.role === 'gerente'){
+        return true;
+    }
+    return false;
+}
+userSchema.methods.isAdminOrUpper = function () {
+    if(this.role === 'admin' || this.role === 'gerente'){
         return true;
     }
     return false;
