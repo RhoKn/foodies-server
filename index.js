@@ -10,6 +10,6 @@ mongoose.connect(config.databaseURL,{ useNewUrlParser: true }).then(()=>{
     console.log('La conexion seasdas hizo chidamente');
     //crear server
     app.listen(port,()=>{
-        console.log('server corriendo');
+        console.log('animo principe si puedes hacerlo');
     });
 }).catch(err => console.log(err));

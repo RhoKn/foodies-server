@@ -12,6 +12,7 @@ api.post('/register',usersController.newUser);
 api.get('/all/:page?',midlwrAuth.authentication,usersController.listAll);
 api.get('/view/:id',usersController.vieweUser);
 api.put('/update/:id',midlwrAuth.authentication,usersController.updateUser);
+api.put('/update/role/:id',midlwrAuth.authentication,usersController.updateRole);
 api.delete('/delete/:id',midlwrAuth.authentication,usersController.deleteUser);
 
 

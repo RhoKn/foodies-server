@@ -164,10 +164,6 @@ function deleteUser (req, res){
                         return responseHelper.helper(undefined,res,message.status,message.message);
                     });
                 }else {
-                    let caca = 0;
-                    if(user.role === 'admin'){
-                        caca = true;
-                    }
                     return responseHelper.helper(undefined,res,500,'No tienes permisos para eliminar usuarios'+user.isAdminOrUpper());
                 }
             }
@@ -175,6 +171,68 @@ function deleteUser (req, res){
     }else{
         return responseHelper.helper(undefined,res,500,'No es posible eliminarte a ti mismo');
     }
+}
+
+function updateRole(req, res){
+    const userToEdit = req.params.id;
+    const newRole = req.body;
+
+    if(userToEdit != req.user.sub){
+        User.findById(req.user.sub,(err,user)=>{
+            if(err){
+                return responseHelper.helper(undefined,res,500,'Hubo un error en la busqueda del usuario actual'); 
+            }
+            if(user){
+                if(user.isOwner()){
+                    asyncUpdateUser(userToEdit,newRole).then((json)=>{
+                        if(json.status != 404){
+                            return responseHelper.helper(specification.user,res,json.status,json.message,json.newUser);
+                        }else{
+                            return responseHelper.helper(undefined,res,json.status,json.message);
+                        }
+                    })
+                }else{
+                    return responseHelper.helper(undefined,res,500,'No tienes permiso para cambiar el rol a los usuarios');
+                }
+            }else{
+                return responseHelper.helper(undefined,res,404,'El usuario proviniente del token es inválido');
+            }
+        });
+    }else{
+        return responseHelper.helper(undefined,res,500,'No es posible editar tu propio rol');
+    }
+
+}
+
+async function asyncUpdateUser(userToUpdate, newRole){
+    var json = {};
+    var status = 200;
+    var message = undefined;
+    var newRoleUser = undefined;
+    if(mongoose.Types.ObjectId.isValid(userToUpdate)){
+        message = await User.findByIdAndUpdate(mongoose.mongo.ObjectId(userToUpdate),newRole,{new:true}).exec().then((userUpdated)=>{
+            if(userUpdated){
+                newRoleUser = userUpdated;
+                return 'Se ha cambiado el rol del usuario con éxito';
+            }else{
+                status = 404;
+                message = 'No se encontró al usuario que se desea editar';
+            }
+        }).catch((err)=>{
+            return 'Hubo un problema con la busqueda del usuario a cambiar de rol';
+        });
+    }else{
+        status = 404;
+        message = 'El usuario que intentas cambiar de rol no existe';
+    }
+    json.status = status;
+    json.message = message;
+
+    if(status != 404){
+        json.newUser = newRoleUser;
+    }
+
+    return json;
 }
 
 async function asyncDeleteUser (userToDelete,isOwner){
@@ -234,7 +292,8 @@ module.exports = {
     login,
     vieweUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateRole
     /**
     soloUno,
     updetear,
