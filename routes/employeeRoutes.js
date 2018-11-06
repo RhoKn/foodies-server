@@ -8,9 +8,9 @@ var api =express.Router();
 
 api.get('/',employeesController.prueba);
 api.post('/new',employeesController.createEmployee);
+api.get('/all/:page?',employeesController.viewAll);
+api.get('/view/:id',employeesController.viewEmployee);
 /*
-api.get('/all/:page?',);
-api.get('/view/:id',);
 api.put('/update/:id',);
 api.delete('/delete/:id',);
 api.post('/newAbsence',);
