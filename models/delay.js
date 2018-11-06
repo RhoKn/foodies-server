@@ -8,7 +8,7 @@ const delaySchema = new Schema ({
     employee        : {type: Schema.ObjectId, ref:'Employee'},
     timeDelayed     : String,
     date            : String,
-    created_at      : moment.unix()
+    created_at      : String
 });
 
 module.exports = mongoose.model('Delay',delaySchema);

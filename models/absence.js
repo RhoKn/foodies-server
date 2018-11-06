@@ -7,7 +7,7 @@ const moment = require('moment');
 const absenceSchema = new Schema({
     employee        :       {type: Schema.ObjectId, ref: 'Employee'},
     date            :       Date,
-    created_at      :       moment.unix()
+    created_at      :       String
 });
 
 module.exports = mongoose.model('Absence',absenceSchema);

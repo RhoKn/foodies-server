@@ -8,7 +8,7 @@ var employeeSchema = new Schema({
     firstName           : String,
     lastName            : String,
     age                 : Number,
-    registrationDate    : moment.unix(), 
+    registrationDate    : String, 
     role                : String,
     shift               : String,
     weeklyHours         : Number
