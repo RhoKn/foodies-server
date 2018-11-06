@@ -7,8 +7,8 @@ const midlwrAuth = require('../middlewares/authentication');
 var api =express.Router();
 
 api.get('/',employeesController.prueba);
+api.post('/new',employeesController.createEmployee);
 /*
-api.post('/new',);
 api.get('/all/:page?',);
 api.get('/view/:id',);
 api.put('/update/:id',);

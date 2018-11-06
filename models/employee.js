@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const moment = require('moment');
+
 
 var employeeSchema = new Schema({
     firstName           : String,
@@ -11,7 +11,8 @@ var employeeSchema = new Schema({
     registrationDate    : String, 
     role                : String,
     shift               : String,
-    weeklyHours         : Number
+    weeklyHours         : Number,
+    fullTime            : Boolean
 });
 
 module.exports = mongoose.model('Employee',employeeSchema);

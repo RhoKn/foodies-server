@@ -11,6 +11,9 @@ var mongoose = require('mongoose');
 function prueba (req, res) {
     res.send('olovaaaaargio');
 }
+/**
+ * @todo Poder usar foto de perfil
+ */
 
 /**
  * Función que permitira crear un nuevo usuario.
