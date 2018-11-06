@@ -98,10 +98,32 @@ function viewEmployee (req,res){
         return responseHelper.helper(undefined,res,404,'ID no es válido');
     }
 }
+/**
+ * @todo hacer que solo admin o superior pueda editar empleados
+ */
+function updateEmployee (req, res){
+    const infoToEdit = req.body;
+    const empToEdit = req.params.id;
+
+    if(mongoose.Types.ObjectId.isValid(empToEdit)){
+        Employee.findByIdAndUpdate(empToEdit,infoToEdit,{new:true},(err,userEdited)=>{
+            if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+
+            if(userEdited){
+                return responseHelper.helper(specification.employee,res,200,'Empleado editado',userEdited);
+            }else{
+                return responseHelper.helper(undefined,res,404,'No se pudo editar el empleado');
+            }
+        })
+    }else{
+        return responseHelper.helper(undefined,res,404,'ID no es válido');
+    }
+}
 
 module.exports = {
     prueba,
     createEmployee,
     viewAll,
-    viewEmployee
+    viewEmployee,
+    updateEmployee
 }
