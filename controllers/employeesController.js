@@ -120,10 +120,24 @@ function updateEmployee (req, res){
     }
 }
 
+/**
+ * @todo hacer que solo admin o superior pueda eliminar empleados
+ */
+function deleteEmployee (req, res){
+    const empToDelete = req.params.id;
+
+    Employee.findByIdAndDelete(empToDelete,(err,deleted)=>{
+        if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        if(deleted) return responseHelper.helper(undefined,res,200,'Empleado eliminado con éxito');
+        return responseHelper.helper(undefined,res,404,'No se pudo eliminar al empleado');
+    });
+}
+
 module.exports = {
     prueba,
     createEmployee,
     viewAll,
     viewEmployee,
-    updateEmployee
+    updateEmployee,
+    deleteEmployee
 }
