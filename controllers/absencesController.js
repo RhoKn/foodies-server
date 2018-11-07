@@ -44,7 +44,46 @@ function createAbsence(req, res){
         return responseHelper.helper(undefined,res,500,'Por favor complete todos los campos necesarios');
     }
 }
+
+function viewAll (req, res){
+    let page = 1;
+    let absencesPPage = 5;
+    if(req.params.page){
+        page = req.params.page;
+    }
+    Absence.find().sort('firstName').paginate(page,absencesPPage,(err,absences,total)=>{
+        if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+        if(!absences){
+            return responseHelper.helper(undefined,res,200,'No existen ausencias registradas');
+        }
+        
+        return res.status(200).send({
+            message: 'Lista de ausencias',
+            absences: absences,
+            total: total,
+            pages: Math.ceil(total/absencesPPage)
+        });
+    });
+}
+
+function viewAbsence (req,res){
+    let absence = req.params.id;
+
+    if(mongoose.Types.ObjectId.isValid(absence)){
+        Absence.findById(absence,(err,absenceFounded)=>{
+            if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+            if(!absenceFounded) return responseHelper.helper(undefined,res,404,'No existe ausencia para este día');
+            return responseHelper.helper(specification.absence,res,200,'Ausencia encontrada',absenceFounded);
+        });
+    }else{
+        return responseHelper.helper(undefined,res,404,'ID inválido');
+    }
+}
+
+
 module.exports = {
     prueba,
-    createAbsence
+    createAbsence,
+    viewAll,
+    viewAbsence
 }
