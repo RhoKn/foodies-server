@@ -6,7 +6,7 @@ const moment = require('moment');
 
 const absenceSchema = new Schema({
     employee        :       {type: Schema.ObjectId, ref: 'Employee'},
-    date            :       Date,
+    date            :       String,
     created_at      :       String
 });
 

@@ -6,6 +6,7 @@ const config = require('./config/config').get(process.env.NODE_ENV == undefined 
 
 const userRoutes = require('./routes/userRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
+const absenceRoutes = require('./routes/absenceRoutes');
 
 var app = express();
 function ignoreFavicon(req, res, next) {
@@ -37,4 +38,5 @@ app.use((req, res, next) => {
 //rutas
 app.use('/users',userRoutes);
 app.use('/employees',employeeRoutes);
+app.use('/absences',absenceRoutes);
 module.exports = app;
