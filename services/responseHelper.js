@@ -33,6 +33,12 @@ module.exports.helper = (specification, res, status, msj, objs)=>{
         if(specification === 'token'){
             content.employees = objs;
         }
+        if(specification === 'absence'){
+            content.absence = objs;
+        }
+        if(specification === 'absences'){
+            content.absences = objs;
+        }
         return res.status(status).send(content);
     }else{
         if(objs != undefined){
