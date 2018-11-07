@@ -80,10 +80,46 @@ function viewAbsence (req,res){
     }
 }
 
+function updateAbsence (req,res){
+    let absence = req.params.id;
+    let infoToEdit = req.body;
+    if(infoToEdit.employee){
+        if(!mongoose.Types.ObjectId.isValid(infoToEdit.employee)){
+            return responseHelper.helper(undefined,res,404,'ID  de empleado inválido');
+        }
+    }
+
+    if(mongoose.Types.ObjectId.isValid(absence)){
+        Absence.findByIdAndUpdate(absence,infoToEdit,{new:true},(err,absenceFounded)=>{
+            if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+            if(!absenceFounded) return responseHelper.helper(undefined,res,404,'No existe la ausencia');
+            return responseHelper.helper(specification.absence,res,200,'Ausencia actualizada exitosamente',absenceFounded);
+        });
+    }else{
+        return responseHelper.helper(undefined,res,404,'ID inválido');
+    }
+
+}
+
+function deleteAbsence (req, res){
+    let absenceToDelete = req.params.id;
+    
+    if(mongoose.Types.ObjectId.isValid(absenceToDelete)){
+        Absence.findByIdAndDelete(absenceToDelete,(err,absenceDeleted)=>{
+            if(err) return responseHelper.helper(undefined,res,500,'Hubo un error en la petición');
+            if(!absenceDeleted) return responseHelper.helper(undefined,res,400,'No se pudo eliminar la ausencia');
+            return responseHelper.helper(undefined,res,200,'Ausencia eliminada exitosamente');
+        })
+    }else{
+        return responseHelper.helper(undefined,res,404,'ID inválido');
+    }
+}
 
 module.exports = {
     prueba,
     createAbsence,
     viewAll,
-    viewAbsence
+    viewAbsence,
+    updateAbsence,
+    deleteAbsence
 }
