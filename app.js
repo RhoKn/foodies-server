@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const config = require('./config/config').get(process.env.NODE_ENV == undefined ? "dev" : process.env.NODE_ENV);
 
 const userRoutes = require('./routes/userRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
 
 var app = express();
 function ignoreFavicon(req, res, next) {
@@ -35,4 +36,5 @@ app.use((req, res, next) => {
 });
 //rutas
 app.use('/users',userRoutes);
+app.use('/employees',employeeRoutes);
 module.exports = app;
