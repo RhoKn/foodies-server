@@ -39,6 +39,12 @@ module.exports.helper = (specification, res, status, msj, objs)=>{
         if(specification === 'absences'){
             content.absences = objs;
         }
+        if(specification === 'delay'){
+            content.delay = objs;
+        }
+        if(specification === 'delays'){
+            content.delays = objs;
+        }
         return res.status(status).send(content);
     }else{
         if(objs != undefined){

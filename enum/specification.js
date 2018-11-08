@@ -9,5 +9,7 @@ module.exports = {
     employees   :   'employees',
     token       :   'token',
     absence     :   'absence',
-    absences     :   'absences'
+    absences    :   'absences',
+    delay       :   'delay',
+    delays      :   'delays'
 }
